@@ -28,24 +28,24 @@ parser.add_argument('--inference_only', default=False, type=str2bool)
 parser.add_argument('--state_dict_path', default=None, type=str)
 
 args = parser.parse_args()
-if not os.path.isdir(args.dataset + '_' + args.train_dir):
-    os.makedirs(args.dataset + '_' + args.train_dir)
-with open(os.path.join(args.dataset + '_' + args.train_dir, 'args.txt'), 'w') as f:
+if not os.path.isdir('./result/' + args.dataset + '_' + args.train_dir):
+    os.makedirs('./result/' + args.dataset + '_' + args.train_dir)
+with open(os.path.join('./result/' + args.dataset + '_' + args.train_dir, 'args.txt'), 'w') as f:
     f.write('\n'.join([str(k) + ',' + str(v) for k, v in sorted(vars(args).items(), key=lambda x: x[0])]))
 f.close()
 
 if __name__ == '__main__':
     # global dataset
     dataset = data_partition(args.dataset)
-
     [user_train, user_valid, user_test, usernum, itemnum] = dataset
+    
     num_batch = len(user_train) // args.batch_size # tail? + ((len(user_train) % args.batch_size) != 0)
     cc = 0.0
     for u in user_train:
         cc += len(user_train[u])
     print('average sequence length: %.2f' % (cc / len(user_train)))
     
-    f = open(os.path.join(args.dataset + '_' + args.train_dir, 'log.txt'), 'w')
+    f = open(os.path.join('./result/' + args.dataset + '_' + args.train_dir, 'log.txt'), 'w')
     
     sampler = WarpSampler(user_train, usernum, itemnum, batch_size=args.batch_size, maxlen=args.maxlen, n_workers=3)
     model = SASRec(usernum, itemnum, args).to(args.device) # no ReLU activation in original SASRec implementation?
@@ -90,12 +90,15 @@ if __name__ == '__main__':
     for epoch in range(epoch_start_idx, args.num_epochs + 1):
         if args.inference_only: break # just to decrease identition
         for step in range(num_batch): # tqdm(range(num_batch), total=num_batch, ncols=70, leave=False, unit='b'):
+            
             u, seq, pos, neg = sampler.next_batch() # tuples to ndarray
             u, seq, pos, neg = np.array(u), np.array(seq), np.array(pos), np.array(neg)
+            
             pos_logits, neg_logits = model(u, seq, pos, neg)
             pos_labels, neg_labels = torch.ones(pos_logits.shape, device=args.device), torch.zeros(neg_logits.shape, device=args.device)
             # print("\neye ball check raw_logits:"); print(pos_logits); print(neg_logits) # check pos_logits > 0, neg_logits < 0
             adam_optimizer.zero_grad()
+            
             indices = np.where(pos != 0)
             loss = bce_criterion(pos_logits[indices], pos_labels[indices])
             loss += bce_criterion(neg_logits[indices], neg_labels[indices])
@@ -120,10 +123,12 @@ if __name__ == '__main__':
             model.train()
     
         if epoch == args.num_epochs:
-            folder = args.dataset + '_' + args.train_dir
+            folder = os.path.join('./result/',args.dataset + '_' + args.train_dir)
+            #folder = args.dataset + '_' + args.train_dir
             fname = 'SASRec.epoch={}.lr={}.layer={}.head={}.hidden={}.maxlen={}.pth'
             fname = fname.format(args.num_epochs, args.lr, args.num_blocks, args.num_heads, args.hidden_units, args.maxlen)
-            torch.save(model.state_dict(), os.path.join(folder, fname))
+            model_path = os.path.join(folder, fname )
+            torch.save(model.state_dict(),model_path)
     
     f.close()
     sampler.close()

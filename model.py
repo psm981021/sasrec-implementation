@@ -74,7 +74,7 @@ class SASRec(torch.nn.Module):
 
         tl = seqs.shape[1] # time dim len for enforce causality
         attention_mask = ~torch.tril(torch.ones((tl, tl), dtype=torch.bool, device=self.dev))
-
+            
         for i in range(len(self.attention_layers)):
             seqs = torch.transpose(seqs, 0, 1)
             Q = self.attention_layernorms[i](seqs)
