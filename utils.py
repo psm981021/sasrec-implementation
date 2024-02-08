@@ -42,7 +42,6 @@ def sample_function(user_train, usernum, itemnum, batch_size, maxlen, result_que
         one_batch = []
         for i in range(batch_size):
             one_batch.append(sample())
-
         result_queue.put(zip(*one_batch))
 
 
@@ -64,6 +63,7 @@ class WarpSampler(object):
             self.processors[-1].start()
 
     def next_batch(self):
+        
         return self.result_queue.get()
 
     def close(self):
@@ -138,7 +138,6 @@ def evaluate(model, dataset, args):
             t = np.random.randint(1, itemnum + 1)
             while t in rated: t = np.random.randint(1, itemnum + 1)
             item_idx.append(t)
-
         predictions = -model.predict(*[np.array(l) for l in [[u], [seq], item_idx]])
         predictions = predictions[0] # - for 1st argsort DESC
 
@@ -186,6 +185,7 @@ def evaluate_valid(model, dataset, args):
             item_idx.append(t)
 
         predictions = -model.predict(*[np.array(l) for l in [[u], [seq], item_idx]])
+        
         predictions = predictions[0]
 
         rank = predictions.argsort().argsort()[0].item()
