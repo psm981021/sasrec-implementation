@@ -5,4 +5,6 @@ __pycache__/
 result/
 result_log/
 .vscode/
+inference.ipynb
+data/V8.csv
 

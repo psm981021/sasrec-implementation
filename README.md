@@ -1,29 +1,26 @@
-update, with few lines of manually initialization code added, it converges as fast as tf version. BTW, I strongly recommend checking issues of the repo from time to time for knowing new updates and details :)
+## SASRec implementation Repo
+---
+SASRec을 Backbone 모델로 사용하여 다양한 방법론 적용
 
+### [기술 스택]
 ---
 
-update: a pretrained model added, pls run the command as below to test its performance(current perf still not as good as paper's reported results after trained more epochs, maybe due to leaky causual attention weights issue got fixed by using PyTorch 1.6's MultiHeadAttention, pls help identifying the root cause if you are interested):
+Python Pytorch Numpy Pandas
 
-```
-python main.py --device=cuda --dataset=ml-1m --train_dir=default --state_dict_path='ml-1m_default/SASRec.epoch=601.lr=0.001.layer=2.head=1.hidden=50.maxlen=200.pth' --inference_only=true --maxlen=200
-
-```
-
+### [Log]
 ---
 
-modified based on [paper author's tensorflow implementation](https://github.com/kang205/SASRec), switching to PyTorch(v1.6) for simplicity, executable by:
 
-```python main.py --dataset=ml-1m --train_dir=default --maxlen=200 --dropout_rate=0.2 --device=cuda```
+### [LINK]
+---
+https://concise-root-fdd.notion.site/SASRec-b761e05f24f1477da9cdfbe032bbfd8a?pvs=4
 
-pls check paper author's [repo](https://github.com/kang205/SASRec) for detailed intro and more complete README, and here's paper bib FYI :)
+### I learned 
+---
+* 24/2/5
+    * SASRec 모델은 아이템 간의 상관관계를 단방향으로 파악하는 데, 이는 모델이 사용자의 이전 상호작용을 기반으로 다음 아이템을 예측하는 Self-Attention 메커니즘을 활용함으로써 이루어집니다.
+    * SASRec 모델이 이전 시퀀스만을 참고하여 Self-Attention 메커니즘을 수행하는 방식을 확인할 수 있었습니다.
 
-```
-@inproceedings{kang2018self,
-  title={Self-attentive sequential recommendation},
-  author={Kang, Wang-Cheng and McAuley, Julian},
-  booktitle={2018 IEEE International Conference on Data Mining (ICDM)},
-  pages={197--206},
-  year={2018},
-  organization={IEEE}
-}
-```
+* 24/2/20
+    * 모델을 통과하면서 데이터가 어떻게 변하는지 확인할 수 있었습니다.
+    * BCE Loss가 어떻게 설정되고 계산되는지 확인할 수 있었습니다.

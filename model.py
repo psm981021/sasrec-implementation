@@ -101,6 +101,7 @@ class SASRec(torch.nn.Module):
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
         pos_embs = self.item_emb(torch.LongTensor(pos_seqs).to(self.dev))
         neg_embs = self.item_emb(torch.LongTensor(neg_seqs).to(self.dev))
+        
 
         pos_logits = (log_feats * pos_embs).sum(dim=-1)
         neg_logits = (log_feats * neg_embs).sum(dim=-1)
@@ -119,7 +120,6 @@ class SASRec(torch.nn.Module):
         item_embs = self.item_emb(torch.LongTensor(item_indices).to(self.dev)) # (U, I, C)
 
         logits = item_embs.matmul(final_feat.unsqueeze(-1)).squeeze(-1)
-
         # preds = self.pos_sigmoid(logits) # rank same item list for different users
         
         return logits # preds # (U, I)
