@@ -24,3 +24,6 @@ https://concise-root-fdd.notion.site/SASRec-b761e05f24f1477da9cdfbe032bbfd8a?pvs
 * 24/2/20
     * 모델을 통과하면서 데이터가 어떻게 변하는지 확인할 수 있었습니다.
     * BCE Loss가 어떻게 설정되고 계산되는지 확인할 수 있었습니다.
+
+* 24/2/26 ~ 24/3/5
+    * DLFS-Rec의 embedding Layer에서 side information이 어떻게 적용되었는지 확인할 수 있었습니다.
