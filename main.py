@@ -12,6 +12,7 @@ def str2bool(s):
     return s == 'true'
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--data_dir", default="./data/Beauty/", type=str) # side info
 parser.add_argument('--dataset', required=True)
 parser.add_argument('--train_dir', required=True)
 parser.add_argument('--batch_size', default=128, type=int)
@@ -26,6 +27,7 @@ parser.add_argument('--l2_emb', default=0.0, type=float)
 parser.add_argument('--device', default='cpu', type=str)
 parser.add_argument('--inference_only', default=False, type=str2bool)
 parser.add_argument('--state_dict_path', default=None, type=str)
+parser.add_argument('--sideinfo_type', default=False,type=bool)  # side info type
 
 args = parser.parse_args()
 if not os.path.isdir('./result/' + args.dataset + '_' + args.train_dir):
@@ -38,6 +40,16 @@ if __name__ == '__main__':
     # global dataset
     dataset = data_partition(args.dataset)
     [user_train, user_valid, user_test, usernum, itemnum] = dataset
+
+    if args.sideinfo_type==True:
+        data_dic = get_data_dic(args)
+
+        args.item_size = data_dic['n_items']  # 0 ~ max_item
+        args.feature_size = data_dic['feature_size']
+        args.items_feature = get_feats_vec(data_dic['items_feat'], data_dic)
+        
+    
+    import IPython; IPython.embed(colors="Linux"); exit(1)
     
     num_batch = len(user_train) // args.batch_size # tail? + ((len(user_train) % args.batch_size) != 0)
     cc = 0.0

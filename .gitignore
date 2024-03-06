@@ -1,5 +1,9 @@
+#---- seongbeom----
+
 .DS_Store
 __pycache__/
+
+
 
 # local
 result/
@@ -8,3 +12,13 @@ result_log/
 inference.ipynb
 data/V8.csv
 
+#server
+
+
+
+# ----yejin----
+
+#local
+data/*
+
+# server
