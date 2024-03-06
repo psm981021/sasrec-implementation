@@ -19,6 +19,6 @@ data/V8.csv
 # ----yejin----
 
 #local
-data/*
+data/Beauty/*.json.gz
 
 # server
